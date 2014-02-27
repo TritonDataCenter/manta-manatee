@@ -1,0 +1,3 @@
+[submodule "deps/manta-scripts"]
+	path = deps/manta-scripts
+	url = git@git.joyent.com:manta-scripts.git
