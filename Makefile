@@ -33,7 +33,7 @@ include ./tools/mk/Makefile.defs
 include ./tools/mk/Makefile.node_prebuilt.defs
 include ./tools/mk/Makefile.smf.defs
 
-RELEASE_TARBALL         := manatee-pkg-$(STAMP).tar.bz2
+RELEASE_TARBALL         := manta-manatee-pkg-$(STAMP).tar.bz2
 ROOT                    := $(shell pwd)
 RELSTAGEDIR             := /tmp/$(STAMP)
 
