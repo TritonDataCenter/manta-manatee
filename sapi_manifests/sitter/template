@@ -1,17 +1,18 @@
 {
     "backupPort": 12345,
     "postgresPort": 5432,
-    "shardPath": "/manatee/{{manatee_shard}}",
+    "shardPath": "{{MANATEE_SHARD_PATH}}",
     "ttl": 60,
-    "ip": "{{PRIMARY_IP}}",
+    "ip": "{{MANTA_IP}}",
     "zoneId": "{{ZONE_UUID}}",
     "heartbeatServerPort": 12344,
     "heartbeatClientCfg": {
         "connectTimeout": 2000,
         "heartbeatInterval": 1000,
         "requestTimeout": 10000,
-        "pgUrl": "tcp://postgres@{{{PRIMARY_IP}}}:5432/postgres",
-        "url": "{{PRIMARY_IP}}",
+        "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres"",
+        "url": "{{MANTA_IP}}",
+        "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres",
         "retry": {
             "retry": 2
         }
@@ -22,36 +23,36 @@
         "port": 12344
     },
     "postgresMgrCfg": {
-        "dataDir": "/manatee/pg/data",
+        "dataDir": "{{PG_DIR}}",
         "dbUser": "postgres",
         "hbaConf": "/opt/smartdc/manatee/etc/pg_hba.conf",
         "healthChkInterval": 10000,
         "healthChkTimeout": 60000,
-        "oneNodeWriteMode": {{^ONE_NODE_WRITE_MODE}}false{{/ONE_NODE_WRITE_MODE}}{{{ONE_NODE_WRITE_MODE}}},
+        "oneNodeWriteMode": false,
         "opsTimeout": 300000,
         "pgCtlPath": "/opt/local/bin/pg_ctl",
         "pgInitDbPath": "/opt/local/bin/initdb",
-        "postgresConf": "/opt/smartdc/manatee/etc/postgresql.sdc.conf",
+        "postgresConf": "/opt/smartdc/manatee/etc/postgresql.manta.{{SIZE}}.conf",
         "postgresPath": "/opt/local/bin/postgres",
         "recoveryConf": "/opt/smartdc/manatee/etc/recovery.conf",
-        "replicationTimeout": 90000,
+        "replicationTimeout": 60000,
         "snapShotterCfg": {
-            "dataset": "zones/{{{ZONE_UUID}}}/data/manatee",
+            "dataset": "zones/{{ZONE_UUID}}/data/manatee",
             "snapshotDir": "/manatee/pg/.zfs/snapshot/",
             "pollInterval": 5000,
             "snapshotNumber": 5,
-            "pgUrl": "tcp://postgres@{{{PRIMARY_IP}}}:5432/postgres"
+            "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres"
         },
         "syncStateCheckerCfg": {
             "interval": 1000,
             "cookieLocation": "/var/tmp/manatee_sync_state"
         },
-        "url": "tcp://postgres@{{{PRIMARY_IP}}}:5432/postgres",
+        "url": "tcp://postgres@{{MANTA_IP}}:5432/postgres",
         "zfsClientCfg": {
-            "dataset": "zones/{{{ZONE_UUID}}}/data/manatee",
-            "parentDataset": "zones/{{{ZONE_UUID}}}/data",
+            "dataset": "zones/{{ZONE_UUID}}/data/manatee",
+            "parentDataset": "zones/{{ZONE_UUID}}/data",
             "snapshotDir": "/manatee/pg/.zfs/snapshot/",
-            "zfsHost": "{{{PRIMARY_IP}}}",
+            "zfsHost": "{{MANTA_IP}}",
             "zfsPort": 1234,
             "pollInterval": 1000,
             "zfsPath": "/usr/sbin/zfs",
@@ -60,22 +61,13 @@
     },
     "zkCfg": {
         "servers": [
-        {{#ZK_HA_SERVERS}}
-          {
-            "host": "{{host}}",
-            "port": {{port}}
-          }{{^last}}, {{/last}}
-        {{/ZK_HA_SERVERS}}
-        {{^ZK_HA_SERVERS}}
-        {{#ZK_SERVERS}}
-          {
-            "host": "{{host}}",
-            "port": {{port}}
-          }{{^last}}, {{/last}}
+         {{#ZK_SERVERS}}
+            {
+              "host": "{{host}}",
+              "port": {{port}}
+            }{{^last}}, {{/last}}
         {{/ZK_SERVERS}}
-        {{/ZK_HA_SERVERS}}
         ],
         "timeout": 60000
-    },
-    "disableSitter": {{^DISABLE_SITTER}}false{{/DISABLE_SITTER}}{{{DISABLE_SITTER}}}
+    }
 }

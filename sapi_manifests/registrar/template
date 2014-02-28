@@ -1,6 +1,6 @@
 {
   "registration": {
-    "domain": "moray",
+    "domain": "{{SERVICE_NAME}}",
     "type": "db_host",
     "ttl": 60
   },
@@ -15,5 +15,6 @@
       {{/ZK_SERVERS}}
     ],
     "timeout": 60000
-  }
+  },
+  "adminIp": "{{MANTA_IP}}"
 }
