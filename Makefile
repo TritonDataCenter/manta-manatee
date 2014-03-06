@@ -71,6 +71,7 @@ release: all deps docs $(SMF_MANIFESTS)
 		$(ROOT)/package.json \
 		$(ROOT)/sapi_manifests \
 		$(ROOT)/smf \
+		$(ROOT)/etc \
 		$(RELSTAGEDIR)/root/opt/smartdc/manatee/
 	mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot/scripts
 	cp -R $(RELSTAGEDIR)/root/opt/smartdc/manatee/build/scripts/* \
