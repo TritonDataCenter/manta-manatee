@@ -10,7 +10,7 @@
         "connectTimeout": 2000,
         "heartbeatInterval": 1000,
         "requestTimeout": 10000,
-        "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres"",
+        "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres",
         "url": "{{MANTA_IP}}",
         "pgUrl": "tcp://postgres@{{MANTA_IP}}:5432/postgres",
         "retry": {
