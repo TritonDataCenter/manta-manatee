@@ -69,6 +69,7 @@ release: all deps docs $(SMF_MANIFESTS)
 		$(ROOT)/deps \
 		$(ROOT)/node_modules \
 		$(ROOT)/package.json \
+		$(ROOT)/pg_dump \
 		$(ROOT)/sapi_manifests \
 		$(ROOT)/smf \
 		$(ROOT)/etc \
