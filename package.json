@@ -12,6 +12,7 @@
         "node": ">=0.10"
     },
     "dependencies": {
+        'manta': "1.2.6",
         "manatee": "git+ssh://git@github.com:joyent/manatee.git#a1022e13f7dcb74c51115f688eab9c14409eef28",
         "carrier": "0.2.0"
     }
