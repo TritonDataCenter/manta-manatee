@@ -10,7 +10,7 @@ export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}
 set -o xtrace
 set -o pipefail
 
-PATH=/opt/smartdc/manatee/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:/usr/sbin:/usr/bin:/opt/smartdc/registrar/build/node/bin:/opt/smartdc/registrar/node_modules/.bin:/opt/smartdc/manatee/lib/tools:/opt/smartdc/manatee/lib/pg_dump/
+PATH=/opt/smartdc/manatee/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:/usr/sbin:/usr/bin:/opt/smartdc/registrar/build/node/bin:/opt/smartdc/manatee/node_modules/.bin:/opt/smartdc/registrar/node_modules/.bin:/opt/smartdc/manatee/lib/tools:/opt/smartdc/manatee/pg_dump/
 
 FATAL=
 CFG=/opt/smartdc/manatee/etc/backup.json
@@ -18,11 +18,11 @@ DATASET=
 DATE=
 DUMP_DATASET=
 DUMP_DIR=/var/tmp/upload/$(uuid)
-MANATEE_LOCK=/opt/smartdc/manatee/bin/manatee-lock
-MANATEE_STAT=/opt/smartdc/manatee/bin/manatee-stat
+MANATEE_LOCK=manatee-lock
+MANATEE_STAT=manatee-stat
 MANTA_DIR_PREFIX=/poseidon/stor/manatee_backups
-MMKDIR=/opt/smartdc/manatee/node_modules/manta/bin/mmkdir
-MPUT=/opt/smartdc/manatee/node_modules/manta/bin/mput
+MMKDIR=mmkdir
+MPUT=mput
 MY_IP=
 LOCK_PATH=/pg_dump_lock
 PG_DIR=
