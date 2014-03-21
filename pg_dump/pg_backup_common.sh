@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# Postgres backup script. This script takes a snapshot of the current postgres
-# data dir, then mounts said snapshot, and dumps all of the tables from
-# postgres, and uploads them to manta
-
+# common functions used by postgres backup scripts
 echo ""   # blank line in log file helps scroll btwn instances
 source /root/.bashrc # source in the manta configs such as the url and credentials
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -105,7 +102,7 @@ function mount_data_set
     # remove postmaster.pid
     rm -f $PG_DIR/postmaster.pid
 
-    ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 &
+    ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 -c logging_collector=off &
     PG_PID=$!
     [[ $? -eq 0 ]] || fatal "unable to start postgres"
 
