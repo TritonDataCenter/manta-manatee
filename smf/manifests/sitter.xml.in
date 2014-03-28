@@ -33,6 +33,7 @@
             </method_context>
         </exec_method>
         <exec_method name='stop' type='method' exec=':kill -2' timeout_seconds='60'/>
+        <instance name="default" enabled="true" />
         <stability value='Unstable'/>
         <template>
             <common_name>
