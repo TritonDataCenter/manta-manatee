@@ -51,7 +51,7 @@ ZK_IP=$(cat $CFG | json -a zkCfg.servers.0.host)
 
 check_lock
 mount_data_set
-backup 1
+backup "DB"
 for tries in {1..5}; do
     echo "upload attempt $tries"
     upload_pg_dumps

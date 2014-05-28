@@ -43,7 +43,7 @@ if [[ $? = '1' ]]; then
     take_zfs_snapshot
     check_lock
     mount_data_set
-    backup
+    backup "DB"
     for tries in {1..5}; do
         echo "upload attempt $tries"
         upload_pg_dumps
