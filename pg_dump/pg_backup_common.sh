@@ -15,7 +15,7 @@ DATASET=
 DATE=
 DUMP_DATASET=
 DUMP_DIR=/var/tmp/upload/$(uuid)
-MANATEE_LOCK=/opt/smartdc/manatee/node_modules/node-manatee/bin/manatee-lock
+MANATEE_LOCK=manatee-lock
 MANATEE_STAT=manatee-stat
 MANTA_DIR_PREFIX=/poseidon/stor/manatee_backups
 MMKDIR=mmkdir
@@ -23,6 +23,7 @@ MPUT=mput
 MY_IP=
 LOCK_PATH=/pg_dump_lock
 PG_DIR=
+PG_DIR_SIZE=
 PG_PID=
 SHARD_NAME=
 PG_START_TIMEOUT=$2 || 10
@@ -101,6 +102,8 @@ function mount_data_set
     rm -f $PG_DIR/recovery.conf
     # remove postmaster.pid
     rm -f $PG_DIR/postmaster.pid
+    # get pg dir size
+    PG_DIR_SIZE=$(du -s $PG_DIR | cut -f1)
 
     ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 -c logging_collector=off &
     PG_PID=$!
@@ -127,7 +130,7 @@ function wait_for_pg_start
     fi
 }
 
-# $1 can either be "JSON", or "DB".
+# $1 optional, dictates whether to backup the moray DB
 function backup ()
 {
     local date
@@ -152,16 +155,17 @@ function backup ()
             sudo -u postgres pg_dump -p 23456 moray -a -t $i | gsed 's/\\\\/\\/g' | sqlToJson.js | gzip -1 > $dump_file
             [[ $? -eq 0 ]] || fatal "Unable to dump table $i"
         done
+        rm $schema
+        [[ $? -eq 0 ]] || fatal "unable to remove schema"
     fi
     if [[ "$1" ==  "DB" ]]; then
         echo "dumping moray db"
         # dump the entire moray db as well for manatee backups.
+        local time=$(date -u +%F-%H-%M-%S)
         full_dump_file=$DUMP_DIR/$date'_'moray-$time.gz
         sudo -u postgres pg_dump -p 23456 moray | gzip -1 > $full_dump_file
         [[ $? -eq 0 ]] || fatal "Unable to dump full moray db"
     fi
-    rm $schema
-    [[ $? -eq 0 ]] || fatal "unable to remove schema"
 }
 
 function upload_pg_dumps
@@ -181,7 +185,7 @@ function upload_pg_dumps
             continue;
         fi
         echo "uploading dump $f to manta"
-        $MPUT -f $DUMP_DIR/$f $dir/$name
+        $MPUT -H "m-pg-size: $PG_DIR_SIZE" -f $DUMP_DIR/$f $dir/$name
         if [[ $? -ne 0 ]]; then
             echo "unable to upload dump $DUMP_DIR/$f"
             upload_error=1
