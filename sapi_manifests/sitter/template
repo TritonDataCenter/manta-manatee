@@ -43,7 +43,7 @@
         }
     },
     "zkCfg": {
-        "connStr": "{{#ZK_SERVERS}} {{host}}:{{port}} {{^last}}, {{/last}} {{/ZK_SERVERS}}",
+        "connStr": "{{#ZK_SERVERS}}{{host}}:{{port}}{{^last}},{{/last}}{{/ZK_SERVERS}}",
         "opts": {
             "sessionTimeout": 60000,
             spinDelay : 1000,
