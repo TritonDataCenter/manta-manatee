@@ -14,7 +14,7 @@ CFG=/opt/smartdc/manatee/etc/backup.json
 DATASET=
 DATE=
 DUMP_DATASET=
-DUMP_DIR=/var/tmp/upload/$(uuid)
+DUMP_DIR=
 MANATEE_LOCK=/opt/smartdc/manatee/node_modules/node-manatee/bin/manatee-lock
 MANATEE_STAT=manatee-stat
 MANTA_DIR_PREFIX=/poseidon/stor/manatee_backups
@@ -35,9 +35,6 @@ ZFS_SNAPSHOT=$1
 ZK_IP=
 
 function finish {
-    if [[ $FATAL -ne 1 ]]; then
-        rm -rf $DUMP_DIR
-    fi
     kill -9 $PG_PID
     zfs destroy -R $DUMP_DATASET
 }
@@ -141,7 +138,9 @@ function backup ()
     else
         date=$DATE
     fi
-
+    # Dump the db to the same dataset. Since the dataset is configured to use
+    # sync=disabled, this will be faster than writing to /var/tmp
+    DUMP_DIR=/$DUMP_DATASET/$(uuid)
     mkdir -p $DUMP_DIR
 
     if [[ "$1" == "JSON" ]]; then
