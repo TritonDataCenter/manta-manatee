@@ -94,8 +94,8 @@ function mount_data_set
 {
     # destroy the dump dataset if it already exists
     zfs destroy -R $DUMP_DATASET
-    # clone the current snapshot
-    zfs clone $ZFS_SNAPSHOT $DUMP_DATASET
+    # clone the current snapshot. Disable sync for faster performance.
+    zfs clone -o sync=disabled $ZFS_SNAPSHOT $DUMP_DATASET
     [[ $? -eq 0 ]] || fatal "unable to clone snapshot"
     echo "successfully mounted dataset"
     # remove recovery.conf so this pg instance does not become a slave
@@ -105,7 +105,9 @@ function mount_data_set
     # get pg dir size
     PG_DIR_SIZE=$(du -s $PG_DIR | cut -f1)
 
-    ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 -c logging_collector=off &
+    ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 \
+        -c logging_collector=off -c fsync=off -c synchronous_commit=off \
+        -c checkpoint_segments=100 -c checkpoint_timeout=1h &
     PG_PID=$!
     [[ $? -eq 0 ]] || fatal "unable to start postgres"
 
