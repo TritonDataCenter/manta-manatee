@@ -125,13 +125,18 @@ function add_manatee_profile_functions {
     # get correct ZK_IPS
     echo "source /opt/smartdc/etc/zk_ips.sh" >> $PROFILE
 
+    # export shard
+    SHARD=$(cat /opt/smartdc/manatee/etc/sitter.json | json shardPath | \
+        cut -d '/' -f3)
+    echo "export SHARD=$SHARD" >> $PROFILE
+
+    # export sitter config
+    echo "export MANATEE_SITTER_CONFIG=/opt/smartdc/manatee/etc/sitter.json" \
+        >> $PROFILE
+
     #functions
     echo "zbunyan() { bunyan -c \"this.component !== 'ZKPlus'\"; }" >> $PROFILE
     echo "mbunyan() { bunyan -c \"this.component !== 'ZKPlus'\"  -c 'level >= 30'; }" >> $PROFILE
-    echo "manatee-history(){ /opt/smartdc/manatee/node_modules/.bin/manatee-history '$SHARD' \"\$ZK_IPS\"; }" >> $PROFILE
-    echo "manatee-stat() { /opt/smartdc/manatee/node_modules/.bin/manatee-stat -p \"\$ZK_IPS\"; }" >> $PROFILE
-    echo "manatee-clear() { /opt/smartdc/manatee/node_modules/.bin/manatee-clear '$SHARD' \"\$ZK_IPS\"; }" >> $PROFILE
-    echo "manatee-snapshots(){ /opt/smartdc/manatee/node_modules/.bin/manatee-snapshots '$DATASET'; }" >> $PROFILE
     echo "msitter(){ tail -f \`svcs -L manatee-sitter\` | mbunyan; }" >> $PROFILE
     echo "mbackupserver(){ tail -f \`svcs -L manatee-backupserver\` | mbunyan; }" >> $PROFILE
     echo "msnapshotter(){ tail -f \`svcs -L manatee-snapshotter\` | mbunyan; }" >> $PROFILE
@@ -142,7 +147,7 @@ function manta_setup_manatee_env {
     mkdir -p /var/log/manatee
 
     #.bashrc
-    echo "export PATH=\$PATH:/opt/smartdc/manatee/lib/tools:/opt/smartdc/manatee/pg_dump/" >>/root/.bashrc
+    echo "export PATH=\$PATH:/opt/smartdc/manatee/bin/:/opt/smartdc/manatee/pg_dump/" >>/root/.bashrc
     echo "alias psql='sudo -u postgres psql'" >>/root/.bashrc
 
     #cron
