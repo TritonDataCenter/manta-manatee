@@ -124,6 +124,7 @@ function add_manatee_profile_functions {
 
     # get correct ZK_IPS
     echo "source /opt/smartdc/etc/zk_ips.sh" >> $PROFILE
+    echo "export ZK_IPS=$ZK_IPS " >> $PROFILE
 
     # export shard
     SHARD=$(cat /opt/smartdc/manatee/etc/sitter.json | json shardPath | \
@@ -137,6 +138,7 @@ function add_manatee_profile_functions {
     #functions
     echo "zbunyan() { bunyan -c \"this.component !== 'ZKPlus'\"; }" >> $PROFILE
     echo "mbunyan() { bunyan -c \"this.component !== 'ZKPlus'\"  -c 'level >= 30'; }" >> $PROFILE
+    echo "manatee-stat(){ manatee-adm.js status }" >> $PROFILE
     echo "msitter(){ tail -f \`svcs -L manatee-sitter\` | mbunyan; }" >> $PROFILE
     echo "mbackupserver(){ tail -f \`svcs -L manatee-backupserver\` | mbunyan; }" >> $PROFILE
     echo "msnapshotter(){ tail -f \`svcs -L manatee-snapshotter\` | mbunyan; }" >> $PROFILE
