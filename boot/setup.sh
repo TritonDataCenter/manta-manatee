@@ -150,6 +150,7 @@ function manta_setup_manatee_env {
 
     #.bashrc
     echo "export PATH=\$PATH:/opt/smartdc/manatee/bin/:/opt/smartdc/manatee/pg_dump/:/opt/smartdc/manatee/node_modules/manatee/bin" >>/root/.bashrc
+    echo "export MANPATH=\$MANPATH:/opt/smartdc/manatee/node_modules/manatee/man" >> /root/.bashrc
     echo "alias psql='sudo -u postgres psql'" >>/root/.bashrc
 
     #cron
