@@ -16,7 +16,7 @@ export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}
 set -o xtrace
 set -o pipefail
 
-PATH=/opt/smartdc/manatee/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:/usr/sbin:/usr/bin:/opt/smartdc/registrar/build/node/bin:/opt/smartdc/manatee/node_modules/.bin:/opt/smartdc/registrar/node_modules/.bin:/opt/smartdc/manatee/lib/tools:/opt/smartdc/manatee/pg_dump/
+PATH=/opt/smartdc/manatee/node_modules/.bin:/opt/smartdc/manatee/build/node/bin:/opt/local/bin:/usr/sbin/:/usr/bin:/usr/sbin:/usr/bin:/opt/smartdc/registrar/build/node/bin:/opt/smartdc/manatee/node_modules/.bin:/opt/smartdc/registrar/node_modules/.bin:/opt/smartdc/manatee/lib/tools:/opt/smartdc/manatee/pg_dump/
 
 FATAL=
 CFG=/opt/smartdc/manatee/etc/backup.json
@@ -24,7 +24,7 @@ DATASET=
 DATE=
 DUMP_DATASET=
 DUMP_DIR=
-MANATEE_LOCK=/opt/smartdc/manatee/node_modules/node-manatee/bin/manatee-lock
+MANATEE_LOCK="manatee-adm check-lock"
 MANATEE_STAT=manatee-stat
 MANTA_DIR_PREFIX=/poseidon/stor/manatee_backups
 MMKDIR=mmkdir
@@ -60,7 +60,7 @@ function fatal
 
 function check_lock
 {
-    $MANATEE_LOCK $LOCK_PATH $ZK_IP
+    $MANATEE_LOCK -p $LOCK_PATH -z $ZK_IP
     [[ $? -eq 0 ]] || fatal "lock either exists or unable to check lock"
 }
 
