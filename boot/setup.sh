@@ -163,7 +163,10 @@ function manta_setup_manatee_env {
     local crontab=/tmp/.manta_manatee_cron
     crontab -l > $crontab
 
-    echo "0 * * * * /opt/smartdc/manatee/pg_dump/pg_dump.sh >> /var/log/manatee/pgdump.log 2>&1" >> $crontab
+    #Before you change cron scheduling, please consult the Mola System "Crons"
+    # Overview documentation (manta-mola.git/docs/system-crons)
+
+    echo "0 0 * * * /opt/smartdc/manatee/pg_dump/pg_dump.sh >> /var/log/manatee/pgdump.log 2>&1" >> $crontab
     [[ $? -eq 0 ]] || fatal "Unable to write to $crontab"
     crontab $crontab
     [[ $? -eq 0 ]] || fatal "Unable import crons"
