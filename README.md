@@ -8,4 +8,11 @@
     Copyright (c) 2014, Joyent, Inc.
 -->
 
-The Manatee/Postgres core image/zone in Manta.
+# manta-manatee
+
+This repository is part of the Joyent Manta project.  For contribution
+guidelines, issues, and general documentation, visit the main
+[Manta](http://github.com/joyent/manta) project page.
+
+This respository contains configuration information and deployment scripts for
+the Manta version of [Manatee](http://github.com/joyent/manatee).
