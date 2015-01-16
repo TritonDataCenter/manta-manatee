@@ -130,7 +130,7 @@ function add_manatee_profile_functions {
 
     # get correct ZK_IPS
     echo "source /opt/smartdc/etc/zk_ips.sh" >> $PROFILE
-    echo "export ZK_IPS=\"$ZK_IPS\"" >> $PROFILE
+    echo "export ZK_IPS=\"\$(echo \$ZK_IPS | cut -d' ' -f1)\"" >> $PROFILE
 
     # export shard
     local shard=$(cat /opt/smartdc/manatee/etc/sitter.json | json shardPath | \
