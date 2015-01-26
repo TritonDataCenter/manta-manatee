@@ -16,5 +16,5 @@
     ],
     "timeout": 60000
   },
-  "adminIp": "{{MANTA_IP}}"
+  "adminIp": "{{auto.MANTA_IP}}"
 }

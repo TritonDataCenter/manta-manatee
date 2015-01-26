@@ -41,9 +41,8 @@ function manta_manatee_setup {
     manta_common_setup
     manta_setup_manatee_env
 
-    ZONE_UUID=`zoneadm list -p | cut -d ':' -f2`
-    DATASET=zones/$ZONE_UUID/data/manatee
-    PARENT_DATASET=zones/$ZONE_UUID/data
+    PARENT_DATASET=zones/$(zonename)/data
+    DATASET=$PARENT_DATASET/manatee
     DATASET_MOUNT_DIR=/manatee/pg
     PG_DIR=/manatee/pg/data
     PG_LOG_DIR=/var/pg
