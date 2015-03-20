@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "manta": "1.2.6",
-        "manatee": "git+ssh://git@github.com:joyent/manatee.git#fb8d0f7",
+        "manatee": "git+ssh://git@github.com:joyent/manatee.git#d9542fe",
         "carrier": "0.2.0"
     },
     "sdcDependencies": {
