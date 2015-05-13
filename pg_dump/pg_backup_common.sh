@@ -43,18 +43,17 @@ ZFS_CFG=/opt/smartdc/manatee/etc/snapshotter.json
 ZFS_SNAPSHOT=$1
 ZK_IP=
 
-function finish {
-    kill -9 $PG_PID
-    zfs destroy -R $DUMP_DATASET
+function onexit
+{
+    graceful_cleanup
 }
-trap finish EXIT
+trap onexit EXIT
 
 function fatal
 {
     FATAL=1
     echo "$(basename $0): fatal error: $*"
-    kill -9 $PG_PID
-    zfs destroy -R $DUMP_DATASET
+    graceful_cleanup || true # for errexit
     exit 1
 }
 
@@ -238,10 +237,64 @@ function get_self_role
     return $continue_backup
 }
 
+#
+# cleanup() is the function that various pg_dump scripts call prior to normal,
+# successful exit in order to kill postgres and destroy the temporary ZFS
+# dataset that we created.  If the cleanup itself fails, then we should exit the
+# program with a non-zero status.
+#
 function cleanup
 {
-    kill -9 $PG_PID
-    [[ $? -eq 0 ]] || fatal "unable to kill postgres"
-    zfs destroy -R $DUMP_DATASET
-    [[ $? -eq 0 ]] || fatal "unable destroy dataset"
+    graceful_cleanup || fatal "unable to clean up"
+}
+
+#
+# graceful_cleanup() attempts to shut down the postgres instance as quickly as
+# possible and then destroy the dump dataset that we've created.  To deal with
+# bugs that result in being unable to destroy the ZFS dataset (either
+# transiently or for an extended period), we keep trying to destroy the dataset
+# until either that succeeds or we discover that it's gone.  If we find it takes
+# more than one attempt, we attempt to use "fuser" to identify the culprits for
+# later debugging.
+#
+# This function has nothing (directly) to do with exiting this script.  It must
+# not call fatal(), since fatal() invokes this function to clean up.  If the
+# caller wants to exit, or to call fatal() themselves, they may do so.
+#
+function graceful_cleanup
+{
+    local dci sleeptime nattempts
+
+    if [[ -n "$PG_PID" ]] && ! kill -9 $PG_PID; then
+        echo "warn: failed to send SIGKILL to pid $PG_PID"
+    fi
+
+    if [[ -z "$DUMP_DATASET" ]]; then
+        echo "warn: DUMP_DATASET is empty"
+        return 0
+    fi
+
+    sleeptime=1
+    nattempts=10
+    for (( dci = 0; dci < nattempts; dci++ )); do
+        if zfs destroy -R $DUMP_DATASET; then
+            return 0;
+        fi
+
+        if ! zfs list $DUMP_DATASET > /dev/null; then
+            echo "failed to destroy \"$DUMP_DATASET\", but also" \
+                "failed to list it (assuming destroyed)"
+            return 0;
+        fi
+
+        echo "failed to destroy $DUMP_DATASET (will retry)"
+        echo "active users:"
+        if ! fuser -c "$(zfs list -H -o mountpoint $DUMP_DATASET)" 2>&1; then
+            echo "warn: failed to list active users"
+        fi
+        sleep $sleeptime
+    done
+
+    echo "failed to destroy $DUMP_DATASET (gave up after $nattempts tries)"
+    return 1
 }
