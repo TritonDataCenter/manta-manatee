@@ -86,6 +86,9 @@ function common_manatee_setup {
     echo "creating manatee dataset"
     zfs create -o canmount=noauto $DATASET
 
+    echo "make snapdir property match the ancestor's"
+    zfs inherit -r snapdir $DATASET
+
     # create postgres user
     echo "creating postgres user"
     useradd postgres
@@ -113,10 +116,6 @@ function common_manatee_setup {
     mkdir -p $PG_DIR
     chown postgres $PG_DIR
     chmod 700 $PG_DIR
-
-    # make .zfs dir visible for snapshots
-    echo "make snapshot dir visible"
-    zfs set snapdir=visible $DATASET
 
     # add pg log dir
     mkdir -p $PG_LOG_DIR
