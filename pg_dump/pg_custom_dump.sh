@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 # Postgres backup script. This script takes a snapshot of the current postgres
@@ -16,8 +16,6 @@
 source /opt/smartdc/manatee/pg_dump/pg_backup_common.sh
 
 PG_START_TIMEOUT=$2
-PG_START_MAX_TRIES=50
-PG_START_TRIES=0
 DATE=
 DATASET=
 DUMP_DATASET=
@@ -61,16 +59,10 @@ ZK_IP=$(cat $CFG | json -a zkCfg.servers.0.host)
 check_lock
 mount_data_set
 backup "DB"
-for tries in {1..5}; do
-    echo "upload attempt $tries"
-    upload_pg_dumps
-    if [[ $? -eq 0 ]]; then
-        echo "successfully finished uploading attempt $tries"
-        cleanup
-        exit 0
-    else
-        echo "attempt $tries failed"
-    fi
+while ! upload_pg_dumps; do
+    echo "uploading database dumps failed (will retry)"
+    sleep 15
 done
-
-fatal "unable to upload all pg dumps"
+echo "successfully uploaded database dumps"
+cleanup
+exit 0

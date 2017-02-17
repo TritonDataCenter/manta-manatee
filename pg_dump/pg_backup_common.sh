@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 # common functions used by postgres backup scripts
@@ -36,8 +36,6 @@ PG_DIR_SIZE=
 PG_PID=
 SHARD_NAME=
 PG_START_TIMEOUT=$2 || 10
-PG_START_MAX_TRIES=50
-PG_START_TRIES=0
 UPLOAD_SNAPSHOT=
 ZFS_CFG=/opt/smartdc/manatee/etc/snapshotter.json
 ZFS_SNAPSHOT=$1
@@ -121,20 +119,37 @@ function mount_data_set
 
 function wait_for_pg_start
 {
-    echo "waiting $PG_START_TIMEOUT seconds for PG to start"
-    PG_START_TRIES=$(($PG_START_TRIES + 1))
-    if [[ $PG_START_TRIES -gt $PG_START_MAX_TRIES ]]; then
-        fatal "PG start tries exceeded, did not start in time"
+    local start=$SECONDS
+
+    if [[ -z $PG_PID ]]; then
+        fatal "abort: PG_PID not set"
     fi
-    sleep $PG_START_TIMEOUT
-    # check and see if pg is up.
-    sudo -u postgres psql -p 23456 moray -c 'select current_time'
-    if [[ $? -eq 0 ]]; then
-        echo "PG has started"
-    else
-        echo "PG not started yet, waiting again"
-        wait_for_pg_start
-    fi
+
+    printf 'waiting for PostgreSQL to start...\n'
+    while :; do
+        #
+        # Make sure the instance of PostgreSQL that we started is still
+        # running:
+        #
+        if ! kill -0 "$PG_PID"; then
+            printf 'PostgreSQL (pid %d) appears to have stopped\n' "$PG_PID"
+            return 1
+        fi
+
+        #
+        # Check to see if PostgreSQL has started to the point where it
+        # can service a basic query.
+        #
+        if psql -U postgres -p 23456 moray -c 'SELECT current_time'; then
+            printf 'PostgreSQL has started (took ~%d seconds)\n' \
+                "$(( SECONDS - start ))"
+            return 0
+        fi
+
+        printf 'PostgreSQL has not yet started (~%d seconds); waiting...\n' \
+            "$(( SECONDS - start ))"
+        sleep "$PG_START_TIMEOUT"
+    done
 }
 
 # $1 optional, dictates whether to backup the moray DB
