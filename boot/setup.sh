@@ -7,7 +7,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -82,6 +82,18 @@ function common_enable_services {
 }
 
 function common_manatee_setup {
+    #
+    # Enable LZ4 compression and set the recordsize to 16KB on the top-level
+    # delegated dataset.  The Manatee dataset is a child dataset, and will
+    # inherit these properties -- even if it is subsequently recreated by a
+    # rebuild operation.
+    #
+    echo "enabling LZ4 compression on manatee dataset"
+    zfs set compress=lz4 "$PARENT_DATASET"
+
+    echo "setting recordsize to 16K on manatee dataset"
+    zfs set recordsize=16k "$PARENT_DATASET"
+
     # create manatee dataset
     echo "creating manatee dataset"
     zfs create -o canmount=noauto $DATASET
