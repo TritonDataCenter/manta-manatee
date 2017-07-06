@@ -101,9 +101,13 @@ function common_manatee_setup {
     echo "make snapdir property match the ancestor's"
     zfs inherit -r snapdir $DATASET
 
+    # create postgres group
+    echo "creating postgres group (gid=907)"
+    groupadd -g 907 postgres
+
     # create postgres user
-    echo "creating postgres user"
-    useradd postgres
+    echo "creating postgres user (uid=907)"
+    useradd -u 907 -g postgres postgres
 
     # grant postgres user chmod chown privileges with sudo
     echo "postgres    ALL=(ALL) NOPASSWD: /usr/bin/chown, /usr/bin/chmod, /opt/local/bin/chown, /opt/local/bin/chmod" >> /opt/local/etc/sudoers
@@ -165,7 +169,7 @@ function manta_setup_manatee_env {
     mkdir -p /var/log/manatee
 
     #.bashrc
-    echo "export PATH=\$PATH:/opt/smartdc/manatee/bin/:/opt/smartdc/manatee/pg_dump/:/opt/smartdc/manatee/node_modules/manatee/bin" >>/root/.bashrc
+    echo "export PATH=\$PATH:/opt/smartdc/manatee/bin/:/opt/smartdc/manatee/pg_dump/:/opt/smartdc/manatee/node_modules/manatee/bin:/opt/postgresql/current/bin" >> /root/.bashrc
     echo "export MANPATH=\$MANPATH:/opt/smartdc/manatee/node_modules/manatee/man" >> /root/.bashrc
     echo "alias psql='sudo -u postgres psql'" >>/root/.bashrc
 

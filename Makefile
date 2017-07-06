@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 #
@@ -63,16 +63,15 @@ manta-scripts: deps/manta-scripts/.git
 	cp deps/manta-scripts/*.sh $(BUILD)/scripts
 
 .PHONY: release
-release: all deps docs $(SMF_MANIFESTS)
+release: all deps docs pg $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
-	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/manatee
+	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/manatee/deps
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot
 	@mkdir -p $(RELSTAGEDIR)/site
 	@touch $(RELSTAGEDIR)/site/.do-not-delete-me
 	@mkdir -p $(RELSTAGEDIR)/root
 	cp -r   $(ROOT)/build \
 		$(ROOT)/bin \
-		$(ROOT)/deps \
 		$(ROOT)/node_modules \
 		$(ROOT)/package.json \
 		$(ROOT)/pg_dump \
@@ -80,6 +79,8 @@ release: all deps docs $(SMF_MANIFESTS)
 		$(ROOT)/smf \
 		$(ROOT)/etc \
 		$(RELSTAGEDIR)/root/opt/smartdc/manatee/
+	cp -r   $(ROOT)/deps/manta-scripts \
+		$(RELSTAGEDIR)/root/opt/smartdc/manatee/deps
 	mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot/scripts
 	cp -R $(RELSTAGEDIR)/root/opt/smartdc/manatee/build/scripts/* \
 	    $(RELSTAGEDIR)/root/opt/smartdc/boot/scripts/
@@ -97,6 +98,10 @@ publish: release
 	mkdir -p $(BITS_DIR)/manta-manatee
 	cp $(ROOT)/$(RELEASE_TARBALL) $(BITS_DIR)/manta-manatee/$(RELEASE_TARBALL)
 
+pg: all deps/postgresql92/.git deps/postgresql96/.git deps/pg_repack/.git
+	$(MAKE) -C node_modules/manatee -f Makefile.postgres \
+		RELSTAGEDIR="$(RELSTAGEDIR)" \
+		DEPSDIR="$(ROOT)/deps"
 
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.node_prebuilt.targ

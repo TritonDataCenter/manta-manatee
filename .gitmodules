@@ -1,3 +1,12 @@
 [submodule "deps/manta-scripts"]
 	path = deps/manta-scripts
-	url = git@github.com:joyent/manta-scripts.git
+	url = https://github.com/joyent/manta-scripts.git
+[submodule "deps/postgresql92"]
+	path = deps/postgresql92
+	url = https://github.com/postgres/postgres.git
+[submodule "deps/postgresql96"]
+	path = deps/postgresql96
+	url = https://github.com/postgres/postgres.git
+[submodule "deps/pg_repack"]
+	path = deps/pg_repack
+	url = https://github.com/reorg/pg_repack.git
