@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 #
@@ -63,7 +63,7 @@ manta-scripts: deps/manta-scripts/.git
 	cp deps/manta-scripts/*.sh $(BUILD)/scripts
 
 .PHONY: release
-release: all deps docs $(SMF_MANIFESTS)
+release: all deps docs pg92 pg96 $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/manatee
 	@mkdir -p $(RELSTAGEDIR)/root/opt/smartdc/boot
@@ -97,6 +97,57 @@ publish: release
 	mkdir -p $(BITS_DIR)/manta-manatee
 	cp $(ROOT)/$(RELEASE_TARBALL) $(BITS_DIR)/manta-manatee/$(RELEASE_TARBALL)
 
+.PHONY: pg92
+pg92: deps/postgresql92/.git
+	cd deps/postgresql92 && env \
+		ac_cv_header_sys_ucred_h=no \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		./configure \
+			--prefix=/opt/postgresql/9.2.4 \
+			--enable-debug \
+			--enable-dtrace \
+			--enable-nls \
+			--with-openssl \
+			--with-readline \
+			--without-perl \
+			--without-python \
+			--without-tcl \
+			--without-zlib
+	cd deps/postgresql92 && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make
+	cd deps/postgresql92 && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make install DESTDIR="$(RELSTAGEDIR)/root"
+	cd deps/postgresql92/contrib/pg_stat_statements && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make install DESTDIR="$(RELSTAGEDIR)/root"
+
+.PHONY: pg96
+pg96: deps/postgresql96/.git
+	cd deps/postgresql96 && env \
+		ac_cv_header_sys_ucred_h=no \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		./configure \
+			--prefix=/opt/postgresql/9.6.3 \
+			--enable-debug \
+			--enable-dtrace \
+			--enable-nls \
+			--with-openssl \
+			--with-readline \
+			--without-perl \
+			--without-python \
+			--without-tcl \
+			--without-zlib
+	cd deps/postgresql96 && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make
+	cd deps/postgresql96 && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make install DESTDIR="$(RELSTAGEDIR)/root"
+	cd deps/postgresql96/contrib/pg_stat_statements && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		make install DESTDIR="$(RELSTAGEDIR)/root"
 
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.node_prebuilt.targ
