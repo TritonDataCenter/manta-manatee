@@ -124,7 +124,7 @@ pg92: deps/postgresql92/.git
 		make install DESTDIR="$(RELSTAGEDIR)/root"
 
 .PHONY: pg96
-pg96: deps/postgresql96/.git
+pg96: deps/postgresql96/.git deps/pg_repack/.git
 	cd deps/postgresql96 && env \
 		ac_cv_header_sys_ucred_h=no \
 		CFLAGS=-m64 LDFLAGS=-m64 \
@@ -148,6 +148,10 @@ pg96: deps/postgresql96/.git
 	cd deps/postgresql96/contrib/pg_stat_statements && env \
 		CFLAGS=-m64 LDFLAGS=-m64 \
 		make install DESTDIR="$(RELSTAGEDIR)/root"
+	cd deps/pg_repack && env \
+		CFLAGS=-m64 LDFLAGS=-m64 \
+		PATH=$(RELSTAGEDIR)/root/opt/postgresql/9.6.3/bin:$$PATH \
+		make install
 
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.node_prebuilt.targ
