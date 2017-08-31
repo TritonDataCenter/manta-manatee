@@ -28,7 +28,7 @@
         "replicationTimeout": 60000,
         "versions": {
             "9.2": "9.2.4",
-            "9.6": "9.6.3"
+            "9.6": "9.6.4"
         },
         "snapShotterCfg": {
             "dataset": "zones/{{auto.ZONENAME}}/data/manatee",
