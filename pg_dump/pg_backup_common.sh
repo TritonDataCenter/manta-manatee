@@ -108,9 +108,17 @@ function mount_data_set
     # get pg dir size
     PG_DIR_SIZE=$(du -s $PG_DIR | cut -f1)
 
+    # Versions of PG after 9.5 removed the checkpoint_segments parameter
+    # if we're running on 9.2, we'll tune it, otherwise leave it alone.
+    PG_STARTUP_OPTIONS="-c logging_collector=off -c fsync=off \
+        -c synchronous_commit=off -c checkpoint_timeout=1h"
+    PG_SERVER_VERSION=$(postgres --version | cut -d' ' -f3)
+    if [[ $PG_SERVER_VERSION == 9.2* ]]; then
+        PG_STARTUP_OPTIONS+=" -c checkpoint_segments=100"
+    fi
+
     ctrun -o noorphan sudo -u postgres postgres -D $PG_DIR -p 23456 \
-        -c logging_collector=off -c fsync=off -c synchronous_commit=off \
-        -c checkpoint_segments=100 -c checkpoint_timeout=1h &
+         $PG_STARTUP_OPTIONS &
     PG_PID=$!
     [[ $? -eq 0 ]] || fatal "unable to start postgres"
 
