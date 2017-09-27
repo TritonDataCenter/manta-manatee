@@ -1,5 +1,4 @@
 #!/bin/bash
-# -*- mode: shell-script; fill-column: 80; -*-
 #
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -83,7 +82,7 @@ function common_enable_services {
 
 function common_manatee_setup {
     #
-    # Enable LZ4 compression and set the recordsize to 16KB on the top-level
+    # Enable LZ4 compression and set the recordsize to 8KB on the top-level
     # delegated dataset.  The Manatee dataset is a child dataset, and will
     # inherit these properties -- even if it is subsequently recreated by a
     # rebuild operation.
@@ -91,8 +90,8 @@ function common_manatee_setup {
     echo "enabling LZ4 compression on manatee dataset"
     zfs set compress=lz4 "$PARENT_DATASET"
 
-    echo "setting recordsize to 16K on manatee dataset"
-    zfs set recordsize=16k "$PARENT_DATASET"
+    echo "setting recordsize to 8K on manatee dataset"
+    zfs set recordsize=8k "$PARENT_DATASET"
 
     # create manatee dataset
     echo "creating manatee dataset"
