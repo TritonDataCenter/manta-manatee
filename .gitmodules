@@ -6,7 +6,7 @@
 	url = https://github.com/postgres/postgres.git
 [submodule "deps/postgresql96"]
 	path = deps/postgresql96
-	url = https://github.com/postgres/postgres.git
+	url = https://github.com/joyent/postgres.git
 [submodule "deps/pg_repack"]
 	path = deps/pg_repack
 	url = https://github.com/reorg/pg_repack.git
