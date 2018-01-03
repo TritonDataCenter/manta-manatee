@@ -1,5 +1,8 @@
+/cache
+/make_stamps
 /node_modules
 /tmp
+/pg_prefaulter
 build
 docs/*.json
 docs/*.html
