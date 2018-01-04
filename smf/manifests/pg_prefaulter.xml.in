@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+
+<!--
+    Copyright (c) 2017, Joyent, Inc.
+-->
+
+<service_bundle type="manifest" name="pg_prefaulter">
+    <service name="manta/application/pg_prefaulter" type="service" version="1">
+        <create_default_instance enabled="true" />
+
+        <dependency name="dep0" grouping="require_all" restart_on="error"
+          type="service">
+            <service_fmri value="svc:/milestone/multi-user:default" />
+        </dependency>
+
+        <exec_method type="method" name="start" timeout_seconds="10"
+          exec="/opt/smartdc/manatee/smf/methods/pg_prefaulter &amp;">
+            <method_context>
+                <method_environment>
+                    <envvar name="USER" value="root" />
+                    <envvar name="HOME" value="/root" />
+                    <envvar name="PATH"
+                      value="/opt/local/bin:/usr/bin:/usr/sbin:/bin:/sbin" />
+
+                    <!--
+                        This value influences the number of LWPs that Go
+                        will use in its M:N scheduler.  It seems unlikely
+                        that a single static value will be optimal for
+                        all systems, but that's what we have to work with
+                        right now.  The value 1 is probably too low, but
+                        using NCPUs is probably too high.  We'll start with
+                        a small number and revisit this if it becomes an issue.
+                    -->
+                    <envvar name="GOMAXPROCS" value="4" />
+
+                    <!--
+                        If the software trips an assertion, we want a core
+                        file rather than a set of stack traces.
+                    -->
+                    <envvar name="GOTRACEBACK" value="crash" />
+                </method_environment>
+            </method_context>
+        </exec_method>
+
+        <exec_method type="method" name="stop" exec=":kill"
+          timeout_seconds="30" />
+
+        <template>
+            <common_name>
+                <loctext xml:lang="C">PostgreSQL Prefaulter</loctext>
+            </common_name>
+        </template>
+    </service>
+</service_bundle>

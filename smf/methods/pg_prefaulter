@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+#
+# Copyright (c) 2017, Joyent, Inc.
+#
+
+#
+# The PostgresSQL prefaulter makes use of the "pg_xlogdump" utility when
+# extracting information from WAL files.  The prefaulter will not start up
+# unless this program is available at the configured location, even though
+# it does not need to run the program until much later; i.e., after
+# connecting to the database.
+#
+# Manatee provides a symbolic link, "/opt/postgresql/current", which points
+# at the specific PostgreSQL version which is in use.  This link is not
+# available until Manatee has determined the correct version to use.  If this
+# is a totally new Manatee peer, it may also be some time before a snapshot
+# of the upstream database has been received from which to make the version
+# decision.
+#
+# We poll waiting for the "pg_xlogdump" program to exist before starting
+# the prefaulter.  There is no timeout on this wait loop.  If the prefaulter
+# itself can be modified to start up without checking for the existence
+# of the utililty, we can stop doing this altogether.
+#
+
+LOG_HOSTNAME="$(/usr/bin/hostname)"
+LOG_PID="$$"
+LOG_LEVEL_INFO=30
+
+PG_XLOGDUMP='/opt/postgresql/current/bin/pg_xlogdump'
+PG_PREFAULTER='/opt/smartdc/manatee/bin/pg_prefaulter'
+PG_PREFAULTER_CONFIG='/opt/smartdc/manatee/etc/pg_prefaulter.toml'
+
+#
+# This function works like printf(1), but emits a Bunyan-formatted log message.
+#
+function logf {
+	local log_time=$(/usr/bin/date -u +%FT%TZ)
+	local log_message=$(printf "$@")
+
+	#
+	# Escape any double quote that appears in the log message:
+	#
+	log_message=${log_message//'"'/'\"'}
+
+	printf '{"name":"pg_prefaulter","hostname":"%s","pid":%d,"level":%d' \
+	    "$LOG_HOSTNAME" "$LOG_PID" "$LOG_LEVEL_INFO"
+	printf ',"msg":"%s","time":"%s","v":0}\n' \
+	    "$log_message" "$log_time"
+}
+
+logged=no
+while :; do
+	if [[ -x $PG_XLOGDUMP ]]; then
+		logf 'found "pg_xlogdump" at "%s"; starting prefaulter' \
+		    "$PG_XLOGDUMP"
+		break
+	fi
+
+	if [[ $logged == no ]]; then
+		logf 'could not find "pg_xlogdump" at "%s"; waiting...' \
+		    "$PG_XLOGDUMP"
+		logged=yes
+	fi
+
+	/usr/bin/sleep 10
+done
+
+exec "$PG_PREFAULTER" run --config="$PG_PREFAULTER_CONFIG"

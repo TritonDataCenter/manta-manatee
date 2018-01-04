@@ -78,6 +78,12 @@ function common_enable_services {
     # With Manta we *always* want sitter.
     echo "Starting sitter"
     svcadm enable manatee-sitter
+
+    #
+    # Import the PostgreSQL prefaulter service.
+    #
+    echo "Starting prefaulter"
+    svccfg import /opt/smartdc/manatee/smf/manifests/pg_prefaulter.xml
 }
 
 function common_manatee_setup {

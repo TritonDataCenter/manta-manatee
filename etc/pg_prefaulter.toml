@@ -1,0 +1,28 @@
+#
+# Configuration file for PostgreSQL prefaulter.  This file is shipped in the
+# Manatee image for use with the prefaulter, which is deployed as a separate
+# SMF service and enabled by default.  The values here are applicable to all
+# deployments without any customisations, so the use of a config-agent template
+# is not required.
+#
+
+[log]
+# level can be set to "DEBUG", "INFO", "WARN", "ERROR", or "FATAL"
+level = "DEBUG"
+
+[postgresql]
+pgdata = "/manatee/pg/data"
+database = "postgres"
+host = "/tmp"
+port = 5432
+user = "postgres"
+
+[postgresql.xlog]
+pg_xlogdump-path = "/opt/postgresql/current/bin/pg_xlogdump"
+
+[run]
+log-format = "bunyan"
+retry-db-init = true
+
+[circonus.api]
+token = "there is no token, only zuul"
