@@ -109,7 +109,7 @@ publish: release
 	    $(BITS_DIR)/manta-manatee/$(RELEASE_TARBALL)
 
 .PHONY: pg
-pg: all deps/postgresql92/.git deps/postgresql96/.git deps/postgresql10/.git \
+pg: all deps/postgresql92/.git deps/postgresql96/.git deps/postgresql11/.git \
     deps/pg_repack/.git
 	$(MAKE) -C node_modules/manatee -f Makefile.postgres \
 	    RELSTAGEDIR="$(RELSTAGEDIR)" \
@@ -137,4 +137,3 @@ include ./tools/mk/Makefile.node_prebuilt.targ
 include ./tools/mk/Makefile.node_modules.targ
 include ./tools/mk/Makefile.smf.targ
 include ./tools/mk/Makefile.targ
-
