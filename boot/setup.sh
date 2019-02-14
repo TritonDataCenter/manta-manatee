@@ -168,6 +168,12 @@ function manta_setup_manatee_env {
     manta_add_logadm_entry "manatee-snapshotter"
     manta_add_logadm_entry "postgresql" "/var/pg"
     manta_add_logadm_entry "pgdump" "/var/log/manatee"
+    # The following entry does not use the manta_add_logadm_entry function
+    # because the underscore in the pg_prefaulter name breaks the upload script
+    logadm -w pg_prefaulter -C 48 -c -p 1h \
+        -t "/var/log/manta/upload/pg-prefaulter_\$nodename_%FT%H:00:00.log" \
+        "/var/svc/log/*pg_prefaulter*.log" || fatal \
+        "unable to create logadm entry"
 }
 
 
