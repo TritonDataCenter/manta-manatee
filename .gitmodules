@@ -13,3 +13,6 @@
 [submodule "deps/pg_prefaulter"]
 	path = deps/pg_prefaulter
 	url = https://github.com/joyent/pg_prefaulter
+[submodule "deps/eng"]
+	path = deps/eng
+	url = https://github.com/joyent/eng.git
