@@ -16,3 +16,6 @@
 [submodule "deps/postgresql11"]
 	path = deps/postgresql11
 	url = https://github.com/kellymclaughlin/postgres.git
+[submodule "deps/eng"]
+	path = deps/eng
+	url = https://github.com/joyent/eng.git
