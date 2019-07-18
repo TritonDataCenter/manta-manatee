@@ -12,7 +12,7 @@
 	url = https://github.com/reorg/pg_repack.git
 [submodule "deps/pg_prefaulter"]
 	path = deps/pg_prefaulter
-	url = https://github.com/chudley/pg_prefaulter
+	url = https://github.com/joyent/pg_prefaulter
 [submodule "deps/postgresql11"]
 	path = deps/postgresql11
 	url = https://github.com/kellymclaughlin/postgres.git
