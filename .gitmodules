@@ -13,9 +13,9 @@
 [submodule "deps/pg_prefaulter"]
 	path = deps/pg_prefaulter
 	url = https://github.com/joyent/pg_prefaulter
-[submodule "deps/postgresql11"]
-	path = deps/postgresql11
-	url = https://github.com/kellymclaughlin/postgres.git
 [submodule "deps/eng"]
 	path = deps/eng
 	url = https://github.com/joyent/eng.git
+[submodule "deps/postgresql12"]
+	path = deps/postgresql12
+	url = https://github.com/postgres/postgres.git
