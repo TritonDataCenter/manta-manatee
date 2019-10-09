@@ -34,6 +34,7 @@ function manta_manatee_setup {
 
     echo "Adding local manifest directories"
     manta_add_manifest_dir "/opt/smartdc/manatee"
+    manta_add_manifest_dir "/opt/smartdc/waferlock"
 
     # MANTA-1360 no args to manta_common_setup so we don't rotate the 'manatee'
     # entry which stomps over the other manatee logs
@@ -81,6 +82,9 @@ function common_enable_services {
     #
     echo "Starting prefaulter"
     svccfg import /opt/smartdc/manatee/smf/manifests/pg_prefaulter.xml
+
+    echo "Starting waferlock"
+    svccfg import /opt/smartdc/waferlock/smf/manifests/waferlock.xml
 }
 
 function common_manatee_setup {
@@ -166,6 +170,7 @@ function manta_setup_manatee_env {
     manta_add_logadm_entry "manatee-sitter"
     manta_add_logadm_entry "manatee-backupserver"
     manta_add_logadm_entry "manatee-snapshotter"
+    manta_add_logadm_entry "waferlock"
     manta_add_logadm_entry "postgresql" "/var/pg"
     manta_add_logadm_entry "pgdump" "/var/log/manatee"
 }
