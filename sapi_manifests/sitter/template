@@ -29,7 +29,7 @@
         "versions": {
             "9.2": "9.2.4",
             "9.6": "9.6.3",
-            "11": "11.1"
+            "12": "12.0"
         },
         "snapShotterCfg": {
             "dataset": "zones/{{auto.ZONENAME}}/data/manatee",
