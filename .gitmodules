@@ -16,3 +16,6 @@
 [submodule "deps/eng"]
 	path = deps/eng
 	url = https://github.com/joyent/eng.git
+[submodule "deps/postgresql12"]
+	path = deps/postgresql12
+	url = https://github.com/postgres/postgres.git
