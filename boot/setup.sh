@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright (c) 2018, Joyent, Inc.
+# Copyright 2019 Joyent, Inc.
 #
 
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -106,7 +106,7 @@ function common_manatee_setup {
 
     # create postgres user
     echo "creating postgres user (uid=907)"
-    useradd -u 907 -g postgres postgres
+    useradd -u 907 -g postgres -m postgres
 
     # grant postgres user chmod chown privileges with sudo
     echo "postgres    ALL=(ALL) NOPASSWD: /usr/bin/chown, /usr/bin/chmod, /opt/local/bin/chown, /opt/local/bin/chmod" >> /opt/local/etc/sudoers
