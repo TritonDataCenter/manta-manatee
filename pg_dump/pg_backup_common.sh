@@ -148,7 +148,7 @@ function wait_for_pg_start
         # Check to see if PostgreSQL has started to the point where it
         # can service a basic query.
         #
-        if psql -U postgres -p 23456 moray -c 'SELECT current_time'; then
+        if psql -U postgres -p 23456 -c 'SELECT current_time'; then
             printf 'PostgreSQL has started (took ~%d seconds)\n' \
                 "$(( SECONDS - start ))"
             return 0
