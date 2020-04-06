@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (c) 2019, Joyent, Inc.
+# Copyright 2019 Joyent, Inc.
 #
 
 NAME = manta-manatee
@@ -65,7 +65,7 @@ ROOT :=				$(shell pwd)
 RELSTAGEDIR :=			/tmp/$(NAME)-$(STAMP)
 
 BASE_IMAGE_UUID = 04a48d7d-6bb5-4e83-8c3b-e60a99e0f48f
-BUILDIMAGE_NAME = manta-postgres
+BUILDIMAGE_NAME = mantav2-postgres
 BUILDIMAGE_DESC	= Manta manatee
 BUILDIMAGE_PKGSRC = lz4-131nb1
 AGENTS		= amon config registrar waferlock
@@ -117,7 +117,8 @@ publish: release
 	    $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
 
 .PHONY: pg
-pg: all deps/postgresql92/.git deps/postgresql96/.git deps/pg_repack/.git
+pg: all deps/postgresql92/.git deps/postgresql96/.git deps/postgresql12/.git \
+    deps/pg_repack/.git
 	$(MAKE) -C node_modules/manatee -f Makefile.postgres \
 	    RELSTAGEDIR="$(RELSTAGEDIR)" \
 	    DEPSDIR="$(ROOT)/deps"
