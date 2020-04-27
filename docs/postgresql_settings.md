@@ -1,30 +1,37 @@
 # PostgreSQL Settings
 
 This document highlights some important deviations from PostgreSQL's defaults in
-the postgresql.conf files in this repository.
+the postgresql.conf files (see etc/) in this repository.
 
 ## autovacuum
 
+To allow autovacuum to keep up with dead tuple accumulation and XID consumption
+on a regular basis, we have tuned the folllowing settings:
+
 - `vacuum_freeze_min_age`
 - `vacuum_freeze_table_age`
-- `autovacuum_vacuum_cost_delay`
 
-The values for these settings (see ./etc/) allow our vacuums to take ~1-3d in
-duration (for both aggressive and normal vacuums, dependant on region's
-workload) while also not causing too much impact to database performance.  They
-allow us to keep up with XID usage without ever performing a vacuum "to prevent
-wraparound" (i.e. when the age of a relation is greater than
-`vacuum_freeze_max_age`), and ultimately result in our databases nearly always
-having some type of vacuum running.
+`vacuum_freeze_table_age` denotes the threshold for when an aggressive vacuum
+will be triggered by autovacuum, otherwise the vacuum will be a normal, dead
+tuple-cleaning vacuum.  `vacuum_freeze_min_age` is set as such to allow even
+normal vacuums to do some amount of opportunistic tuple freezing.  At the
+current settings and workload we have found that both normal and aggressive
+vacuums take the same amount of time and impact database performance similarly.
+With these settings we never intend to hit `vacuum_freeze_max_age` (i.e. a
+vacuum "to prevent wraparound").
 
 These must also be paired with some relation-specific settings which cannot be
-expressed in these configuration files.  The settings are as follows and should
-be set via `psql`:
+expressed per relation in these configuration files.  The settings are as
+follows and should be set via an `ALTER TABLE` command:
 
 - `autovacuum_vacuum_scale_factor: 0`
 - `autovacuum_vacuum_threshold`
 - `autovacuum_analyze_scale_factor: 0`
 - `autovacuum_analyze_threshold`
 
+Note: These relation-specific changes only need to be applied to the primary
+database.  The other peers in a cluster will get these settings over the
+replication stream.
+
 The intention of these settings is to allow autovacuum to trigger vacuums based
-on a constant rate of dead tuple accumulation in a given relation.
+on a constant rate of change in the relation.
