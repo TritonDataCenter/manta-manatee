@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright 2019 Joyent, Inc.
+# Copyright 2020 Joyent, Inc.
 #
 
 NAME = manta-manatee
@@ -69,6 +69,9 @@ BUILDIMAGE_NAME = mantav1-postgres
 BUILDIMAGE_DESC	= Manta manatee
 BUILDIMAGE_PKGSRC = lz4-131nb1
 AGENTS		= amon config registrar waferlock
+
+# For mantav1, specify the branch to compare copyrights with
+ENGBLD_CHECK_COPYRIGHT_ARGS = -b mantav1
 
 #
 # Repo-specific targets
