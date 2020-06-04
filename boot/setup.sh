@@ -6,7 +6,7 @@
 #
 
 #
-# Copyright 2019 Joyent, Inc.
+# Copyright 2020 Joyent, Inc.
 #
 
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -175,11 +175,21 @@ function manta_setup_manatee_env {
     manta_add_logadm_entry "pgdump" "/var/log/manatee"
 }
 
+#
+# The prefaulter constantly attempts to reach api.circonus.com, increasing
+# binder load. We'll simply quieten that by pointing it to localhost.
+#
+function hush_circonus {
+	echo "# keep prefaulter quiet" >>/etc/hosts
+	echo "127.0.0.1 api.circonus.com" >>/etc/hosts
+}
 
 source ${DIR}/scripts/util.sh
 source ${DIR}/scripts/services.sh
 
 manta_manatee_setup
 add_manatee_profile_functions
+
+hush_circonus
 
 exit 0
