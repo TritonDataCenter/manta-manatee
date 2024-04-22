@@ -6,6 +6,7 @@
 
 #
 # Copyright 2021 Joyent, Inc.
+# Copyright 2024 MNX Cloud, Inc.
 #
 
 NAME = manta-manatee
@@ -44,7 +45,7 @@ NODE_PREBUILT_IMAGE =		18b094b0-eb01-11e5-80c1-175dac7ddf02
 # the GOPATH directory in the way the toolchain expects.
 #
 GO_PREBUILT_VERSION =		1.9.2
-PG_PREFAULTER_IMPORT =		github.com/joyent/pg_prefaulter
+PG_PREFAULTER_IMPORT =		github.com/TritonDataCenter/pg_prefaulter
 PG_PREFAULTER =			pg_prefaulter
 
 CLEAN_FILES +=			$(PG_PREFAULTER)
