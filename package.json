@@ -1,19 +1,19 @@
 {
     "name": "manta-manatee",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "private": true,
     "description": "H/A Postgres Minder",
-    "author": "Joyent (joyent.com)",
+    "author": "MNX Cloud (mnx.io)",
     "repository": {
         "type": "git",
-        "url": "git@github.com:joyent/manta-manatee.git"
+        "url": "git@github.com:TritonDataCenter/manta-manatee.git"
     },
     "engines": {
         "node": ">=0.10"
     },
     "dependencies": {
         "manta": "1.2.6",
-        "manatee": "git+https://github.com/joyent/manatee.git#14c07243fee6e914123e4801f00f5e73947324a1",
+        "manatee": "git+https://github.com/TritonDataCenter/manatee.git#14c07243fee6e914123e4801f00f5e73947324a1",
         "carrier": "0.2.0"
     },
     "sdcDependencies": {
