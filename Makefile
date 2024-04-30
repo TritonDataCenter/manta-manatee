@@ -6,7 +6,6 @@
 
 #
 # Copyright 2021 Joyent, Inc.
-# Copyright 2024 MNX Cloud, Inc.
 #
 
 NAME = manta-manatee
