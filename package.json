@@ -1,9 +1,9 @@
 {
     "name": "manta-manatee",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "private": true,
     "description": "H/A Postgres Minder",
-    "author": "MNX Cloud (mnx.io)",
+    "author": "Edgecast Cloud (edgecast.io)",
     "repository": {
         "type": "git",
         "url": "git@github.com:TritonDataCenter/manta-manatee.git"
@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "manta": "1.2.6",
-        "manatee": "git+https://github.com/TritonDataCenter/manatee.git#14c07243fee6e914123e4801f00f5e73947324a1",
+        "manatee": "git+https://github.com/TritonDataCenter/manatee.git#0c753b57870257ded0acc4751203be6c59fcaacf",
         "carrier": "0.2.0"
     },
     "sdcDependencies": {
