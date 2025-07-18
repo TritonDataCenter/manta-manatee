@@ -7,6 +7,7 @@
 
 #
 # Copyright 2020 Joyent, Inc.
+# Copyright 2025 Edgecast Cloud LLC.
 #
 
 export PS4='[\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
@@ -191,5 +192,8 @@ manta_manatee_setup
 add_manatee_profile_functions
 
 hush_circonus
+
+# Add metricsPorts metadata for cmon-agent discovery
+mdata-put metricPorts 5433
 
 exit 0
